@@ -26,7 +26,7 @@
 
 import config
 import worker_model_soap, worker_smtp
-import time, threading, os, logging, socket, Queue
+import time, threading, os, logging, socket, queue
 
 class Workers_Manager:
     
@@ -38,7 +38,7 @@ class Workers_Manager:
         self.log = logger
         self.log.info('Constructor - Workers Manager, hostname: %s' 
                       % (self.hostname,))
-        self.msg_queue = Queue.Queue()
+        self.msg_queue = queue.Queue()
                     
     def print_threads_status(self):
         for t in threading.enumerate():
@@ -73,7 +73,7 @@ class Workers_Manager:
                 self.max_threads = self.model.get_max_threads(self.hostid)
                 activeT = threading.activeCount() - 1
 
-                if activeT <> int(self.max_threads):
+                if activeT != int(self.max_threads):
                     self.log.info(' * active thread %d / %d' % (activeT, int(self.max_threads)))
 
                 if activeT < int(self.max_threads):
