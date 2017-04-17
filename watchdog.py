@@ -30,16 +30,16 @@ logging.basicConfig(format='%(asctime)s P:%(process)d %(levelname)s: %(message)s
                     level=config.watch_log_level)
 
 logging.info('** Watchdog START')
-p = subprocess.Popen(["ps", "-ax"], stdout=subprocess.PIPE)
+p = subprocess.Popen(["ps", "ax"], stdout=subprocess.PIPE)
 out, err = p.communicate()
 
-if ( config.watchdog_search_str in out ):
+if ( config.watchdog_search_str in out.__str__()):
     logging.info('OK!')
     proc = [f for f in out.split('\n') if config.watchdog_search_str in f ]
     for i in proc:
         logging.info(i)
 else:
-    args = ['python2', config.watchdog_search_str ]
+    args = ['python', config.watchdog_search_str ]
     p = subprocess.Popen(args)
     logging.info('NOT FOUND - STARTED with pid: %s' %(p.pid,))
 

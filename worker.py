@@ -24,8 +24,8 @@
 
 from abc import abstractmethod
 from abc import ABCMeta
-from _pyio import __metaclass__
-import netaddr, threading, Queue
+# from _pyio import __metaclass__
+import netaddr, threading, queue
 
 class Worker (threading.Thread):
     "Base class for all kind of Workers"
@@ -90,7 +90,7 @@ class Worker (threading.Thread):
             if msg == 'DIE':
                 raise DieException()
                     #Exception("...diying...bye...")
-        except Queue.Empty as e:
+        except queue.Empty as e:
             pass
 
     @abstractmethod
