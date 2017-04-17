@@ -17,7 +17,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 """
- 
  @note: python 2.7
  @version: 0.2
  @author: Lukasz Bacik <mail@luka.sh>
@@ -25,8 +24,8 @@
 
 from abc import abstractmethod
 from abc import ABCMeta
-from _pyio import __metaclass__
-import netaddr, threading
+# from _pyio import __metaclass__
+import netaddr, threading, queue
 
 class Worker (threading.Thread):
     "Base class for all kind of Workers"
@@ -82,10 +81,24 @@ class Worker (threading.Thread):
             startip = netaddr.IPAddress(lastip) + 1
         return startip
 
+    def set_msg_queue(self, msg_queue):
+        self.msg_queue = msg_queue
+
+    def check_msg_queue(self):
+        try:
+            msg = self.msg_queue.get_nowait()
+            if msg == 'DIE':
+                raise DieException()
+                    #Exception("...diying...bye...")
+        except queue.Empty as e:
+            pass
+
     @abstractmethod
     def run(self):
         """
         All workers should implements this method 
         """
         pass
-    
+
+class DieException(Exception):
+    pass

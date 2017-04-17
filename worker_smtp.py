@@ -17,7 +17,6 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 """
- 
  @note: python 2.7
  @version: 0.2
  @author: Lukasz Bacik <mail@luka.sh>
@@ -25,6 +24,7 @@
 
 import config
 from worker import Worker
+from worker import DieException
 import smtplib, netaddr, time
 
 class Worker_SMTP(Worker):
@@ -42,7 +42,6 @@ class Worker_SMTP(Worker):
                       % (self.moduleid,))
         
     def _check_host(self, ip, port):
-        ''' '''
         SMTPResult = {
             'checkid' : self.checkid,
             'ipv4' : ip.__str__(),
@@ -71,10 +70,8 @@ class Worker_SMTP(Worker):
        
     def _check_network(self):
         pass   
-       
+
     def run(self):
-        """
-        """
         infinity = True
         while infinity:
             try:
@@ -93,16 +90,17 @@ class Worker_SMTP(Worker):
                         result = self._check_host(ip, self.port)
                         self.log.debug(result)
                         self.model.db_save(self.nodeid, result)
-                        #time.sleep(5)
-                        
+                        self.check_msg_queue()
+
                 self.model.update_network_status(ipclass.ip, ipclass.prefixlen, 'FINISHED')
-                self.log.info('FINISHED: %s/%s' %(ipclass.ip, ipclass.prefixlen))    
-            
+                self.log.info('FINISHED: %s/%s' %(ipclass.ip, ipclass.prefixlen))
+                self.check_msg_queue()
+
+            except DieException:
+                self.log.info('dying... bye, bye...');
+                infinity = False
             except Exception as e:
                 self.log.error(' *** Exception *** WORKER SMTP *** ')
                 self.log.exception(e)
                 time.sleep(5)
                 infinity = False
-   
-        
-    

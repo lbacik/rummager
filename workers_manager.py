@@ -26,7 +26,7 @@
 
 import config
 import worker_model_soap, worker_smtp
-import time, threading, os, logging, socket
+import time, threading, os, logging, socket, queue
 
 class Workers_Manager:
     
@@ -34,53 +34,65 @@ class Workers_Manager:
         self.model = worker_model_soap.Worker_Model_SOAP()
         self.hostname = hostname
         self.hostid = self.model.get_host_id(self.hostname)
-        self.max_threads = 0 #self.model.get_max_threads(self.hostid)
+        self.max_threads = 0
         self.log = logger
         self.log.info('Constructor - Workers Manager, hostname: %s' 
                       % (self.hostname,))
-        # structure that is containing list of thread and worker objects 
-        self.threads = []
+        self.msg_queue = queue.Queue()
                     
     def print_threads_status(self):
         for t in threading.enumerate():
             self.log.warning('--- %s : %s' 
                              % (t.getName(), t.is_alive().__str__()))    
-            
+
+    def start_new_treads(self, amount):
+        for i in range(0, amount):
+            self.log.info(' * Starting thread %d' % (i,))
+            w = worker_smtp.Worker_SMTP(self.model, self.hostid, self.log)
+            w.set_msg_queue(self.msg_queue)
+            w.start()
+
+    def kill_existing_treads(self, amount):
+        for i in range(0, amount):
+            if (threading.active_count()) > 1:
+                self.log.info(' * Putting DIE into msg queue...')
+                self.msg_queue.put_nowait('DIE');
+
     def run(self):
         """ Main loop """
         nodes_running = 0
         old_nodes_running = 0
         while True:
             try:
-                self.max_threads = self.model.get_max_threads(self.hostid)
                 if self.model.get_nodes_running(self.hostid) != nodes_running \
                         or nodes_running != old_nodes_running:
-                    # some threads are probably suspended 
                     self.log.warning(' * nodes running %s ' % (nodes_running,))
                     old_nodes_running = nodes_running
                     nodes_running = self.model.get_nodes_running(self.hostid)
-                    
-                activeT = threading.activeCount()    
-                if activeT != int(self.max_threads)+1 :
-                    self.log.info(' * active thread %d / %d' 
-                              % (activeT-1, int(self.max_threads)))
-                for i in range(activeT, int(self.max_threads)+1):
-                    self.log.info(' * Starting thread %d' % (i,))
-                    w = worker_smtp.Worker_SMTP(self.model, self.hostid, self.log)
-                    w.start()
+
+                self.max_threads = self.model.get_max_threads(self.hostid)
+                activeT = threading.activeCount() - 1
+
+                if activeT != int(self.max_threads):
+                    self.log.info(' * active thread %d / %d' % (activeT, int(self.max_threads)))
+
+                if activeT < int(self.max_threads):
+                    self.start_new_treads(int(self.max_threads) - activeT)
                     time.sleep(2)
+                elif activeT > int(self.max_threads):
+                    self.kill_existing_treads(activeT - int(self.max_threads))
+
             except Exception as e:
-                #print("Error: unable to start thread")
                 self.log.error(' *** Exception *** MAIN *** ')
                 self.log.exception(e)
+
             time.sleep(10)
 
 if __name__ == "__main__":
     
     logging.basicConfig(format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s',
-                    filename='%s/%s' % (config.log_dir, config.log_file), 
-                    #'%s/T-%s-%s.log' % (config.log_dir, PID, TIME),
-                    level=config.log_level) #logging.INFO)
+                    filename='%s/%s' % (config.log_dir, config.log_file),
+                    level=config.log_level)
 
     PID = os.getpid()
     hostname = socket.gethostname()

@@ -27,7 +27,7 @@ import logging
 
 soapurl = 'http://__HOST__/soap.php?wsdl'
 
-log_dir = '../logs/'
+log_dir = 'logs'
 log_file = 'rum.log'
 log_level = logging.INFO
 
@@ -39,3 +39,11 @@ smtp_helo_email_address = 'rum@luka.sh'
 
 smtp_port = 25
 smtp_timeout = 6
+
+'''
+Local configuration
+Add your all local configuration changes to the config_local.py file
+'''
+import os.path
+if os.path.isfile('config_local.py'):
+    from config_local import *
