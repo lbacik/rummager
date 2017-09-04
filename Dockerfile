@@ -8,4 +8,4 @@ WORKDIR /project
 
 RUN pip install -r requirements.txt
 
-CMD ["/bin/bash", "-c", "rummager.py"]
+CMD ["python3", "rummager.py"]
