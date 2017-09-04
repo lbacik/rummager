@@ -38,8 +38,8 @@ class Worker_Model_SOAP:
         hostid = self.c.service.getHostID(hostname)
         return hostid
 
-    def get_max_threads(self, hostid):
-        max_threads = self.c.service.getHostMaxThreads(hostid)
+    def get_max_threads(self, hostid, workerType):
+        max_threads = self.c.service.getHostMaxThreads(hostid, workerType)
         return max_threads
 
     def get_node_id(self, hostid):
@@ -100,9 +100,9 @@ class Worker_Model_SOAP:
         id = self.c.service.getModuleId(module)
         return id
 
-    def start_new_check(self, nodeid, module):
+    def start_new_check(self, nodeid, moduleid):
         '''  '''
-        checkid = self.c.service.startNewCheck(nodeid, module)
+        checkid = self.c.service.startNewCheck(nodeid, moduleid)
         return checkid 
     
     def get_nodes_running(self, hostid):
