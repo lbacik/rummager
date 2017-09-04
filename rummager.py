@@ -18,6 +18,11 @@ PID = os.getpid()
 hostname = socket.gethostname()
 logging.info('MANAGER START - hostname: %s, pid: %s' % (hostname, PID))
 
+logging.debug('CONFIG.soapurl: %s' %(config.soapurl,))
+logging.debug('CONFIG.soapurl_sender: %s' %(config.soapurl_sender,))
+logging.debug('CONFIG.log_dir: %s' %(config.log_dir,))
+logging.debug('CONFIG.mainloop_delay: %s' %(config.mainloop_delay,))
+
 model_soap = Worker_Model_SOAP()
 model_sender_soap = Worker_Sender_Model_SOAP()
 
