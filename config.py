@@ -25,6 +25,8 @@
 # imported to get access to const defined in logging module
 import logging
 
+mainloop_delay = 30
+
 soapurl = 'http://__HOST__/soap.php?wsdl'
 
 log_dir = 'logs'
@@ -33,7 +35,7 @@ log_level = logging.INFO
 
 watch_log_file = 'watchdog.log'
 watch_log_level = logging.INFO
-watchdog_search_str = 'workers_manager.py'
+watchdog_search_str = 'rummager.py'
 
 smtp_helo_email_address = 'rum@luka.sh'
 

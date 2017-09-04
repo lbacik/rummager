@@ -59,6 +59,8 @@ class Worker (threading.Thread):
     def get_network(self):
         """
         Get network on which the worker will work
+
+        @todo: concerns only SMTP worker (?)
         """
         self.netid = self.model.get_network_id(self.checkid)
         [ip,mask] = self.model.get_network(self.netid).split('/')
@@ -72,7 +74,9 @@ class Worker (threading.Thread):
         Get ip address from which to start
         
         @todo: This method should return a set (list) of addresses that has not 
-        been checked rather than just a start point (to avoid holes in ip classes)  
+        been checked rather than just a start point (to avoid holes in ip classes)
+
+        @todo: concerns only SMTP worker (?)
         """
         lastip = self.model.get_last_ip(ip, broadcast)
         if lastip == None:
