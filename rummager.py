@@ -1,5 +1,6 @@
 
 import logging, os, queue, socket, time
+import ssl
 import config
 
 import sys
@@ -9,6 +10,8 @@ from worker_model_soap import Worker_Model_SOAP
 from worker_model_soap_sender import Worker_Sender_Model_SOAP
 from worker_pool_manager import Worker_Pool_Manager
 from workers_manager import Workers_Manager
+
+ssl._create_default_https_context = ssl._create_unverified_context
 
 logging.basicConfig(format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s',
                     filename='%s/%s' % (config.log_dir, config.log_file),
