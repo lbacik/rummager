@@ -49,3 +49,5 @@ Add your all local configuration changes to the config_local.py file
 import os.path
 if os.path.isfile('config_local.py'):
     from config_local import *
+
+from config_env import *

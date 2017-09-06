@@ -1,5 +1,6 @@
 
 import logging, os, queue, socket, time
+import ssl
 import config
 
 import sys
@@ -10,6 +11,8 @@ from worker_model_soap_sender import Worker_Sender_Model_SOAP
 from worker_pool_manager import Worker_Pool_Manager
 from workers_manager import Workers_Manager
 
+ssl._create_default_https_context = ssl._create_unverified_context
+
 logging.basicConfig(format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s',
                     filename='%s/%s' % (config.log_dir, config.log_file),
                     level=config.log_level)
@@ -17,6 +20,11 @@ logging.basicConfig(format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s'
 PID = os.getpid()
 hostname = socket.gethostname()
 logging.info('MANAGER START - hostname: %s, pid: %s' % (hostname, PID))
+
+logging.debug('CONFIG.soapurl: %s' %(config.soapurl,))
+logging.debug('CONFIG.soapurl_sender: %s' %(config.soapurl_sender,))
+logging.debug('CONFIG.log_dir: %s' %(config.log_dir,))
+logging.debug('CONFIG.mainloop_delay: %s' %(config.mainloop_delay,))
 
 model_soap = Worker_Model_SOAP()
 model_sender_soap = Worker_Sender_Model_SOAP()
