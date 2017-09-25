@@ -1,6 +1,6 @@
 
-from worker_smtp import Worker_SMTP as SMTP
-from worker_sender import Worker_Sender as SENDER
+from .worker_smtp import Worker_SMTP as SMTP
+from .worker_sender import Worker_Sender as SENDER
 
 class Worker_Factory:
 

@@ -25,7 +25,9 @@
 from abc import abstractmethod
 from abc import ABCMeta
 # from _pyio import __metaclass__
-import netaddr, threading, queue
+import netaddr
+import threading
+import queue
 
 class Worker (threading.Thread):
     "Base class for all kind of Workers"

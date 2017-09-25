@@ -23,9 +23,11 @@
 """
 
 import config
-from worker import Worker
-from worker import DieException
-import smtplib, netaddr, time
+from .worker import Worker
+from .worker import DieException
+import smtplib
+import netaddr
+import time
 
 class Worker_SMTP(Worker):
     """

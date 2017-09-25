@@ -1,21 +1,36 @@
 
-import logging, os, queue, socket, time
+import logging
+import sys
+import os
+import queue
+import socket
+import time
 import ssl
 import config
 
-import sys
-sys.path.append('src')
+from src.worker_model_soap import Worker_Model_SOAP
+from src.worker_model_soap_sender import Worker_Sender_Model_SOAP
+from src.worker_pool_manager import Worker_Pool_Manager
+from src.workers_manager import Workers_Manager
 
-from worker_model_soap import Worker_Model_SOAP
-from worker_model_soap_sender import Worker_Sender_Model_SOAP
-from worker_pool_manager import Worker_Pool_Manager
-from workers_manager import Workers_Manager
+if config.allow_unverified_ssl == True:
+    ssl._create_default_https_context = ssl._create_unverified_context
 
-ssl._create_default_https_context = ssl._create_unverified_context
+log_format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s'
+log_level = config.log_level
 
-logging.basicConfig(format='%(asctime)s T:%(thread)d %(levelname)s: %(message)s',
-                    filename='%s/%s' % (config.log_dir, config.log_file),
-                    level=config.log_level)
+if config.log_type == 'stdout':
+    logging.basicConfig(
+        format=log_format,
+        handlers=[logging.StreamHandler(sys.stdout)],
+        level=log_level
+    )
+else:
+    logging.basicConfig(
+        format=log_format,
+        filename='%s/%s' % (config.log_dir, config.log_file),
+        level=log_level
+    )
 
 PID = os.getpid()
 hostname = socket.gethostname()

@@ -27,8 +27,12 @@ import logging
 
 mainloop_delay = 30
 
-soapurl = 'http://__HOST__/soap.php?wsdl'
+soapurl = 'https://__HOST__/soap.php?wsdl'
+soapurl_sender = 'https://__HOST__/soap-sender.php?wsdl'
 
+allow_unverified_ssl = True
+
+log_type = 'file'
 log_dir = 'logs'
 log_file = 'rum.log'
 log_level = logging.INFO
