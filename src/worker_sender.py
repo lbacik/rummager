@@ -1,8 +1,9 @@
 
 import config
-from worker import Worker
-from worker import DieException
-import smtplib, time
+from .worker import Worker
+from .worker import DieException
+import smtplib
+import time
 from email.message import Message
 
 class Worker_Sender(Worker):

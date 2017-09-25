@@ -1,5 +1,5 @@
 
-from worker_factory import Worker_Factory
+from .worker_factory import Worker_Factory
 import threading
 
 class Worker_Pool_Manager:
